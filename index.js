@@ -1,7 +1,8 @@
 import express from "express";
 import { config } from "./config.js";
 import { connectDB } from "./database/index.js";
-import { router as routes } from "./routes/index.js"
+import { router as routes } from "./routes/index.js";
+connectDB();
 
 const app = express();
 const PORT = config.PORT || 4000;
