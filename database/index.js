@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
 import { config } from "../../config.js");
 
-mongoose.connect(config.MONGO_URI);
+export function connectDB() {
+    mongoose.connect(config.MONGO);
+}
