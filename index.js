@@ -1,7 +1,6 @@
 import express from "express";
 import { config } from "./config.js";
 import { router as routes } from "./routes/index.js"
-config();
 
 const app = express();
 const PORT = config.PORT || 4000;
