@@ -3,27 +3,31 @@ import Post from "../../database/modals/post.js";
 
 export const write = async (req, res) => {
     try {
-        const { description, title } = req.body;
-        const userId = "";
-        const date = "";
-        const time = "";
+        const { body, title, user } = req.body;
 
-        if (!description && !title) {
+        if (!body || !title) {
             return res.status(400).json({ "error": "Title or description was empty" });
         }
 
         const newPost = new Post({
             title: title,
-            description: description,
-            date: date,
-            time: time,
-            userId: userId
+            body: body,
+            createdAt: Date.now(),
+            user: user
         });
+
         newPost.save();
 
-        res.status(200).json({ message: "Post was created successfully"});
+        await User.updateOne({
+            _id: user._id
+        }, {
+            $push: {
+                post: newPost
+            }
+        });
+        
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ "error": "Internal server error" });
     }
 }
