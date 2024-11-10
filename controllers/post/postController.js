@@ -1,6 +1,6 @@
 import Post from "../../database/modals/post.js";
 
-export const read = async (req, res) => {
+exports.read = (req, res) => {
     try {
         const { postId } = req.body;
 
