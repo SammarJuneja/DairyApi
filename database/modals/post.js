@@ -24,6 +24,6 @@ const postSchema = new Schema({
   }
 });
 
-const Post = model("User", userSchema);
+const Post = model("Post", postSchema);
 
 export default Post;
