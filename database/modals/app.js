@@ -1,8 +1,12 @@
 import { Schema, model } from "mongoose";
 
-const app = new Schema({
+const appSchema = new Schema({
   theme: {
     type: String,
     default: "dark"
   }
 });
+
+const App = model("App", appSchema);
+
+export default App;
