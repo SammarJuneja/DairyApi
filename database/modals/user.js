@@ -19,13 +19,15 @@ const userSchema = new Schema({
   post: {
     type: [{
       type: Schema.Types.ObjectId,
-      ref: "Post"
+      ref: "Post",
+      required: true
     }],
     default: []
   },
   app: {
     type: Schema.Types.ObjectId,
-    ref: "App"
+    ref: "App",
+    required: true
   }
 });
 
