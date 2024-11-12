@@ -3,8 +3,8 @@ import { Schema, model } from "mongoose";
 const appSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User"
+    ref: "User",
+    required: true
   },
   theme: {
     type: String,
