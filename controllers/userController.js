@@ -1,5 +1,6 @@
 import Post from "../../database/modals/post.js";
 import User from "../../database/modals/user.js";
+import bcrypt from "bcryptjs";
 
 exports.register = async (req, res) => {
   try {
@@ -20,11 +21,14 @@ exports.register = async (req, res) => {
         message: "User with provided email already exists"
       });
     }
+    
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUser = new User({
       username: username,
       email: email,
-      password: password
+      password: hashedPassword
     });
 
     res.status(200).json({
@@ -55,6 +59,14 @@ exports.login = async (req, res) => {
     if (!user) {
       res.status(404).json({
         message: "Account does not exist"
+      });
+    }
+
+    const decodedPassword = await bcrypt.compare(password, user.password);
+
+    if (!decodedPassword) {
+      res.status(401).json({
+        message: "Provided password was wrong"
       });
     }
 
