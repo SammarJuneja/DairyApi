@@ -1,13 +1,15 @@
 import Post from "../../database/modals/post.js";
 import User from "../../database/modals/user.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { config } from "../../config.js";
 
 exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Please fill all the details"
       });
     }
@@ -17,7 +19,7 @@ exports.register = async (req, res) => {
     });
 
     if (user) {
-      res.status(403).json({
+      return res.status(403).json({
         message: "User with provided email already exists"
       });
     }
@@ -31,8 +33,13 @@ exports.register = async (req, res) => {
       password: hashedPassword
     });
 
+    await newUser.save();
+
+    const token = jwt.sign(newUser._id, config.JWT_SECRET);
+
     res.status(200).json({
-      message: "Your account was created successfully"
+      message: "Your account was created successfully",
+      token: token
     });
   } catch (error) {
     console.log(error);
@@ -47,7 +54,7 @@ exports.login = async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Please fill all the details"
       });
     }
@@ -57,7 +64,7 @@ exports.login = async (req, res) => {
     });
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Account does not exist"
       });
     }
@@ -65,12 +72,17 @@ exports.login = async (req, res) => {
     const decodedPassword = await bcrypt.compare(password, user.password);
 
     if (!decodedPassword) {
-      res.status(401).json({
+      return res.status(401).json({
         message: "Provided password was wrong"
       });
     }
 
-    
+    const token = jwt.sign(user._id, config.JWT_SECRET);
+
+    res.status(200).json({
+      message: "You logged in successfully",
+      token: token
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
