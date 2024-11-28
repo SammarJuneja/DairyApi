@@ -1,7 +1,7 @@
 import Post from "../../database/modals/post.js";
 import User from "../../database/modals/user.js";
 
-exports.read = (req, res) => {
+exports.read = async (req, res) => {
     try {
         const { postId } = req.body;
 
@@ -47,6 +47,10 @@ exports.write = async (req, res) => {
             $push: {
                 post: newPost
             }
+        });
+
+        res.status(200).json({
+            message: "You successfully wrote a post"
         });
         
     } catch (error) {
