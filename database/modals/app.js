@@ -8,7 +8,7 @@ const appSchema = new Schema({
   },
   theme: {
     type: String,
-    default: "dark"
+    default: "Dark"
   }
 });
 

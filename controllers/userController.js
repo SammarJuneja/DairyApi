@@ -1,5 +1,6 @@
 import Post from "../../database/modals/post.js";
 import User from "../../database/modals/user.js";
+import App from "../../database/modals/app.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { config } from "../../config.js";
@@ -77,7 +78,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    const token = jwt.sign(user._id, config.JWT_SECRET);
+    const token = jwt.sign(user, config.JWT_SECRET);
 
     res.status(200).json({
       message: "You logged in successfully",
@@ -88,5 +89,29 @@ exports.login = async (req, res) => {
     res.status(500).json({
       message: "Internal server error"
     });
+  }
+}
+
+exports.changeTheme = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { theme } = req.body;
+
+    const user = await User.findOne({
+      _id: userId
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Account does not exist"
+      });
+    }
+
+    App.UpdateOne({
+
+    });
+
+  } catch (error) {
+    
   }
 }
