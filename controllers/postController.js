@@ -6,7 +6,7 @@ exports.read = async (req, res) => {
         const { postId } = req.body;
 
         if (!postId) {
-            return res.status(400).json({ "error": "Post id was not provided" });
+            return res.status(400).json({ message: "Post id was not provided" });
         }
 
         const post = await Post.findOne({
@@ -14,13 +14,13 @@ exports.read = async (req, res) => {
         });
 
         if (!post) {
-            return res.status(404).json({ "error": "Post was not found" });
+            return res.status(404).json({ message: "Post was not found" });
         }
 
         res.status(200).json({ post });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ "error": "Internal server error" });
+        res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -29,7 +29,7 @@ exports.write = async (req, res) => {
         const { body, title, user } = req.body;
 
         if (!body || !title) {
-            return res.status(400).json({ "error": "Title or description was empty" });
+            return res.status(400).json({ message: "Title or description was empty" });
         }
 
         const newPost = new Post({
@@ -55,6 +55,47 @@ exports.write = async (req, res) => {
         
     } catch (error) {
         console.log(error);
-        res.status(500).json({ "error": "Internal server error" });
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+exports.edit = async (req, res) => {
+    try {
+        const { body, title, postId } = req.body;
+
+        if (!body || !title) {
+            return res.status(400).json({ message: "Title or description was empty" });
+        }
+
+        if (!postId) {
+            return res.status(404).json({ message: "Post doesn't exist" });
+        }
+
+        const post = await Post.findOne({
+            _id: postId
+        });
+
+        if (!post) {
+            return res.status(404).json({ message: "Post was not found" });
+        }
+
+        let TITLE = title || post.title;
+        let BODY = body || post.body;
+
+        await Post.updateOne({
+            _id: postId
+        }, {
+            $set: {
+                title: TITLE,
+                body: BODY
+            }
+        });
+
+        res.status(200).json({
+            message: "You successfully edited a post"
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }

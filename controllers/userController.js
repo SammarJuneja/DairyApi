@@ -101,17 +101,33 @@ exports.changeTheme = async (req, res) => {
       _id: userId
     });
 
+    if (theme.trim() !== "Dark".toLowerCase() || theme.trim() !== "White".toLowerCase()) {
+      return res.status(400).json({
+        message: "Please select Dark or White theme"
+      });
+    }
+
     if (!user) {
       return res.status(404).json({
         message: "Account does not exist"
       });
     }
 
-    App.UpdateOne({
-
+    await App.updateOne({
+      user: user
+    }, {
+      $set: {
+        theme: theme
+      }
     });
 
+    res.status(200).json({
+      message: `Your app theme was changed to ${theme}`
+    });
   } catch (error) {
-    
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error"
+    });
   }
 }
