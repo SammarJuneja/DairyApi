@@ -114,7 +114,7 @@ exports.changeTheme = async (req, res) => {
     }
 
     await App.updateOne({
-      user: user
+      user: user._id
     }, {
       $set: {
         theme: theme
